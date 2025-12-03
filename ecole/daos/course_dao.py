@@ -4,8 +4,8 @@
 Classe Dao[Course]
 """
 
-from models.course import Course
-from daos.dao import Dao
+from ecole.models.course import Course
+from ecole.daos.dao import Dao
 from dataclasses import dataclass
 from typing import Optional
 

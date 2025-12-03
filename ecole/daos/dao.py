@@ -15,7 +15,7 @@ class Dao[T](ABC):
     connection: ClassVar[pymysql.Connection] = \
         pymysql.connect(host='localhost',
                         user='ecole',
-                        password='FqDEuKWd9TxLERZg6ooh',
+                        password='Louvre',
                         database='ecole',
                         cursorclass=pymysql.cursors.DictCursor)
 
