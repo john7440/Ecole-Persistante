@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 from ecole.daos.dao import Dao
 from ecole.models.student import Student
@@ -24,6 +24,25 @@ class StudentDao(Dao[Student]):
             student = None
 
         return student
+
+    def read_all(self) -> List[Student]:
+        students: List[Student] = []
+        try:
+            with Dao.connection.cursor() as cursor:
+                sql = "SELECT * FROM student s INNER JOIN person p ON s.id_person = p.id_person"
+                cursor.execute(sql)
+                records = cursor.fetchall()
+
+            for record in records:
+                student = Student(record['first_name'], record['last_name'],record['age'])
+                student.id = record['student_nbr']
+
+                students.append(student)
+
+        except Exception as e:
+            print(e)
+
+        return students
 
     def update(self, student: Student) -> bool:
         """Met à jour en BD l'entité Course correspondant à course, pour y correspondre
