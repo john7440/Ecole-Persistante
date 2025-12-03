@@ -51,10 +51,21 @@ class School:
                 print(f"- {student}")
             print()
 
+    # gestion cours
     @staticmethod
     def get_course_by_id(id_course: int):
         course_dao: CourseDao = CourseDao()
         return course_dao.read(id_course)
+
+    @staticmethod
+    def create_course(name: str,start_date: date, end_date: date, id_teacher: int) -> int:
+        """
+            Crée un cours en BD via CourseDao
+            :param name: nom du cours
+            :param start_date: date de début (ex. '2025-01-01')
+            :param end_date: date de fin (ex. '2025-06-30')
+            :return: l'id du cours inséré en BD (0 si échec)"""
+        return 0
 
     def get_teacher_by_id(self, id_teacher: int):
         teacher_dao: TeacherDao = TeacherDao()
@@ -67,6 +78,47 @@ class School:
     def get_address_by_id(self, id_address: int):
         address_dao: AddressDao = AddressDao()
         return address_dao.read(id_address)
+
+    def get_all_courses(self) -> str:
+        course_dao: CourseDao = CourseDao()
+        courses = course_dao.read_all()
+        result = ""
+        for c in courses:
+            result += (
+                f"{c.id} - {c.name} ({c.start_date} → {c.end_date})\n"
+            )
+        return result
+
+    def get_all_addresses(self) -> str:
+        address_dao: AddressDao = AddressDao()
+        adresses = address_dao.read_all()
+        result = ""
+        for a in adresses:
+            result += (
+                f"{a.street}, {a.postal_code}: {a.city}\n"
+            )
+        return result
+
+    def get_all_teachers(self) -> str:
+        teacher_dao: TeacherDao = TeacherDao()
+        teachers = teacher_dao.read_all()
+        result = ""
+        for t in teachers:
+            result += (
+                f"Prénom: {t.first_name}\nNom: {t.last_name}\nAge: {t.age}\nDate d'embauche: {t.hiring_date}\n\n"
+            )
+        return result
+
+    def get_all_students(self) -> str:
+        student_dao: StudentDao = StudentDao()
+        students = student_dao.read_all()
+        result = ""
+        for s in students:
+            result += (
+                f"Prénom: {s.first_name}\nNom: {s.last_name}\nAge: {s.age}\n\n"
+            )
+        return result
+
 
     def init_static(self) -> None:
         """Initialisation d'un jeu de test pour l'école."""
