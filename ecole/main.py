@@ -26,7 +26,15 @@ Bienvenue dans notre école
     print(school.get_course_by_id(1))
     print(school.get_course_by_id(2))
     print(school.get_course_by_id(9))
+    print('----------Teacher test----------')
     print(school.get_teacher_by_id(1))
+    print(school.get_teacher_by_id(2))
+    print('----------Student test----------')
+    print(school.get_student_by_id(1))
+    print(school.get_student_by_id(2))
+    print('----------Address test----------')
+    print(school.get_address_by_id(1))
+    print(school.get_address_by_id(2))
 
 
 if __name__ == '__main__':
