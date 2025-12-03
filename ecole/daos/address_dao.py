@@ -1,7 +1,7 @@
 from ecole.daos.dao import Dao
 from ecole.models.address import Address
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 
 @dataclass
@@ -31,6 +31,26 @@ class AddressDao(Dao[Address]):
             address = None
 
         return address
+
+    def read_all(self) -> List[Address]:
+        addresses: List[Address] = []
+        try:
+            with Dao.connection.cursor() as cursor:
+                sql = "SELECT * FROM address"
+                cursor.execute(sql)
+                records = cursor.fetchall()
+
+            for record in records:
+                address = Address(record['street'], record['city'], record['postal_code'])
+                address.id = record['id_address']
+
+                addresses.append(address)
+
+        except Exception as e:
+            print(f"Erreur lors de la lecture des adresses: {e}")
+
+        return addresses
+
 
     def update(self, address: Address) -> bool:
         """Met à jour en BD l'entité Course correspondant à course, pour y correspondre
