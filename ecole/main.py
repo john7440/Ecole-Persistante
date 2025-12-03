@@ -4,8 +4,8 @@
 """
 Application de gestion d'une école
 """
-
 from business.school import School
+from ecole.daos.course_dao import CourseDao
 
 
 def main() -> None:
@@ -23,18 +23,11 @@ Bienvenue dans notre école
     # affichage de la liste des cours, leur enseignant et leurs élèves
     school.display_courses_list()
 
-    print(school.get_course_by_id(1))
-    print(school.get_course_by_id(2))
-    print(school.get_course_by_id(9))
-    print('----------Teacher test----------')
-    print(school.get_teacher_by_id(1))
-    print(school.get_teacher_by_id(2))
-    print('----------Student test----------')
-    print(school.get_student_by_id(1))
-    print(school.get_student_by_id(2))
-    print('----------Address test----------')
-    print(school.get_address_by_id(1))
-    print(school.get_address_by_id(2))
+    print('---------------Courses---------------')
+    course_dao = CourseDao()
+    all_courses = course_dao.read_all()
+    for c in all_courses:
+        print(f"{c.id} - {c.name} ({c.start_date} → {c.end_date})")
 
 
 if __name__ == '__main__':
