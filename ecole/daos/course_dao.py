@@ -7,17 +7,15 @@ Classe Dao[Course]
 from ecole.models.course import Course
 from ecole.daos.dao import Dao
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 
 @dataclass
 class CourseDao(Dao[Course]):
     def create(self, course: Course) -> int:
         """Crée en BD l'entité Course correspondant au cours course
-
         :param course: à créer sous forme d'entité Course en BD
-        :return: l'id de l'entité insérée en BD (0 si la création a échoué)
-        """
+        :return: l'id de l'entité insérée en BD, retourneras un message si erreur """
         ...
         return 0
 
@@ -37,6 +35,26 @@ class CourseDao(Dao[Course]):
             course = None
 
         return course
+
+    def read_all(self) -> List[Course]:
+        courses: List[Course] = []
+        try:
+            with Dao.connection.cursor() as cursor:
+                sql = "SELECT * FROM course"
+                cursor.execute(sql)
+                records = cursor.fetchall()
+
+            for record in records:
+                course = Course(record['name'], record['start_date'], record['end_date'])
+                course.id = record['id_course']
+
+                courses.append(course)
+
+        except Exception as e:
+            print(f"Erreur lors de la lecture des cours: {e}")
+
+        return courses
+
 
     def update(self, course: Course) -> bool:
         """Met à jour en BD l'entité Course correspondant à course, pour y correspondre
