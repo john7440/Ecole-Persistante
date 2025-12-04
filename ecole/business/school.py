@@ -42,7 +42,7 @@ class School:
         self.students.append(student)
 
     def display_courses_list(self) -> None:
-        """Affichage de la liste des cours avec pour chacun d'eux :
+        """Affichage de la liste des cours avec pour chacun d'eux
         - leur enseignant
         - la liste des élèves le suivant"""
         for course in self.courses:
@@ -51,31 +51,47 @@ class School:
                 print(f"- {student}")
             print()
 
-    # gestion cours
+    #============== gestion cours======================
     @staticmethod
     def get_course_by_id(id_course: int):
         course_dao: CourseDao = CourseDao()
         return course_dao.read(id_course)
 
     @staticmethod
-    def create_course(name: str,start_date: date, end_date: date, id_teacher: int) -> int:
+    def create_course(name: str,start_date: date, end_date: date) -> int:
         """
             Crée un cours en BD via CourseDao
             :param name: nom du cours
             :param start_date: date de début (ex. '2025-01-01')
             :param end_date: date de fin (ex. '2025-06-30')
             :return: l'id du cours inséré en BD (0 si échec)"""
+        ...
         return 0
 
-    def get_teacher_by_id(self, id_teacher: int):
-        teacher_dao: TeacherDao = TeacherDao()
-        return teacher_dao.read(id_teacher)
+    @staticmethod
+    def update_course_by_id(id_course: int, name: str, start_date : date, end_date: date) -> bool:
+        course_dao: CourseDao = CourseDao()
+        course = course_dao.read(id_course)
 
-    def get_student_by_id(self, id_student: int):
-        student_dao: StudentDao = StudentDao()
-        return student_dao.read(id_student)
+        if course is None:
+            print(f"Aucun cours trouvée avec id: {id_course}")
+            return False
 
-    def get_all_courses(self) -> str:
+        course.name = name
+        course.start_date = start_date
+        course.end_date = end_date
+
+        success = course_dao.update(course)
+
+        if success:
+            print(f"Cour mis à jour avec succès (id:{id_course})")
+        else:
+            print(f"Échec de la mise à jour du cours (id:{id_course})")
+
+        return success
+
+    @staticmethod
+    def get_all_courses() -> str:
         course_dao: CourseDao = CourseDao()
         courses = course_dao.read_all()
         result = ""
@@ -85,12 +101,71 @@ class School:
             )
         return result
 
-    #gestion des adresses
-    def get_address_by_id(self, id_address: int):
+    #================Gestion des teachers====================
+    @staticmethod
+    def get_teacher_by_id(id_teacher: int):
+        teacher_dao: TeacherDao = TeacherDao()
+        return teacher_dao.read(id_teacher)
+
+    @staticmethod
+    def update_teacher_by_id(id_teacher: int, first_name: str, last_name: str, age: int, hiring_date: date) -> bool:
+        teacher_dao: TeacherDao = TeacherDao()
+        teacher = teacher_dao.read(id_teacher)
+
+        if teacher is None:
+            print(f"Aucun professeur trouvée avec id={id_teacher}")
+            return False
+
+        teacher.first_name = first_name
+        teacher.last_name = last_name
+        teacher.age = age
+        teacher.hiring_date = hiring_date
+
+        success = teacher_dao.update(teacher)
+
+        if success:
+            print(f"Professeur mis à jour avec succès (id={id_teacher})")
+        else:
+            print(f"Échec de la mise à jour du professeur (id={id_teacher})")
+
+        return success
+
+    #=================Gestion des Students=================
+    @staticmethod
+    def get_student_by_id(id_student: int):
+        student_dao: StudentDao = StudentDao()
+        return student_dao.read(id_student)
+
+    @staticmethod
+    def update_student_by_id(id_student: int, first_name: str, last_name: str, age: int) -> bool:
+        student_dao: StudentDao =  StudentDao()
+        student = student_dao.read(id_student)
+
+        if student is None:
+            print(f"Aucune élève trouvée avec id={id_student}")
+            return False
+
+        student.first_name = first_name
+        student.last_name = last_name
+        student.age = age
+
+        success = student_dao.update(student)
+
+        if success:
+            print(f"Elève mise à jour avec succès (id={id_student})")
+        else:
+            print(f"Échec de la mise à jour de l'élève (id={id_student})")
+
+        return success
+
+    #==============gestion des adresses============
+    @staticmethod
+    def get_address_by_id(id_address: int):
         address_dao: AddressDao = AddressDao()
         return address_dao.read(id_address)
 
-    def get_all_addresses(self) -> str:
+    @staticmethod
+    def get_all_addresses() -> str:
         address_dao: AddressDao = AddressDao()
         adresses = address_dao.read_all()
         result = ""
@@ -100,7 +175,8 @@ class School:
             )
         return result
 
-    def create_new_adress(self, street: str, city: str, postal_code: int) -> str:
+    @staticmethod
+    def create_new_address(street: str, city: str, postal_code: int) -> str:
         address_dao: AddressDao = AddressDao()
         new_address = Address(street=street, city=city, postal_code=postal_code)
 
@@ -110,10 +186,11 @@ class School:
         else:
             return "Échec de la création de l'adresse! "
 
-    def update_address_by_id(self, id_address: int, street: str, city: str, postal_code: int ) -> bool:
+    @staticmethod
+    def update_address_by_id(id_address: int, street: str, city: str, postal_code: int) -> bool:
         """
         Met à jour une adresse en BD via son id
-        :param id_address: id de l'adresse à mettre à jour
+        :param id_address: identifiant de l'adresse à mettre à jour
         :param street: nouvelle rue
         :param city: nouvelle ville
         :param postal_code: nouveau code postal
@@ -140,7 +217,8 @@ class School:
         return success
 
 
-    def delete_address_by_id(self, id_address: int) -> bool:
+    @staticmethod
+    def delete_address_by_id(id_address: int) -> bool:
         """
         Supprime une adresse en BD via son identifiant
         :param id_address: identifiant de l'adresse à supprimer
@@ -162,7 +240,8 @@ class School:
 
         return success
 
-    def get_all_teachers(self) -> str:
+    @staticmethod
+    def get_all_teachers() -> str:
         teacher_dao: TeacherDao = TeacherDao()
         teachers = teacher_dao.read_all()
         result = ""
@@ -172,7 +251,8 @@ class School:
             )
         return result
 
-    def get_all_students(self) -> str:
+    @staticmethod
+    def get_all_students() -> str:
         student_dao: StudentDao = StudentDao()
         students = student_dao.read_all()
         result = ""
@@ -182,7 +262,8 @@ class School:
             )
         return result
 
-    def print_all_database(self):
+    @staticmethod
+    def print_all_database():
         school = School()
         print('---------------Courses---------------\n')
         print(school.get_all_courses())
