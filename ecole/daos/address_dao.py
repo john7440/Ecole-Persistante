@@ -4,12 +4,12 @@ from dataclasses import dataclass
 from typing import Optional, List
 
 
+# noinspection PyTypeChecker
 @dataclass
 class AddressDao(Dao[Address]):
     def create(self, address: Address) -> int:
-        """Crée en BD l'entité Course correspondant au cours course
-
-        :param course: à créer sous forme d'entité Course en BD
+        """Crée en BD l'entité Address correspondant à l'adresse donnée
+        :param address: à créer sous forme d'entité Address en BD
         :return: l'id de l'entité insérée en BD (0 si la création a échoué)
         """
         try:
@@ -42,7 +42,9 @@ class AddressDao(Dao[Address]):
 
         return address
 
-    def read_all(self) -> List[Address]:
+    @staticmethod
+    def read_all() -> List[Address]:
+        """Renvoie toutes les adresses"""
         addresses: List[Address] = []
         try:
             with Dao.connection.cursor() as cursor:
@@ -62,19 +64,38 @@ class AddressDao(Dao[Address]):
         return addresses
 
     def update(self, address: Address) -> bool:
-        """Met à jour en BD l'entité Course correspondant à course, pour y correspondre
-
-        :param course: cours déjà mis à jour en mémoire
-        :return: True si la mise à jour a pu être réalisée
+        """Met à jour en BD l'entité Address correspondant à l'adresse donnée
+        :param address: Adresse déjà mise à jour en mémoire
+        :return: True si la mise à jour a pu être réalisée, False sinon
         """
-        ...
-        return True
+        """Met à jour en BD l'entité Address correspondant à l'adresse donnée
+        :param address: adresse déjà mise à jour en mémoire
+        :return: True si la mise à jour a pu être réalisée, False sinon
+        """
+        try:
+            with Dao.connection.cursor() as cursor:
+                sql = "UPDATE address SET street=%s, city=%s, postal_code=%s WHERE id_address=%s"
+                cursor.execute(sql, (address.street, address.city, address.postal_code, address.id))
+                Dao.connection.commit()
+                return cursor.rowcount > 0
+        except Exception as e:
+            print(f"Erreur lors de la mise à jour de l'adresse: {e}")
+            Dao.connection.rollback()
+            return False
 
     def delete(self, address: Address) -> bool:
-        """Supprime en BD l'entité Course correspondant à course
-
-        :param course: cours dont l'entité Course correspondante est à supprimer
+        """Supprime en BD l'entité Address correspondant à l'adresse donnée
+        :param address: adresse dont l'entité correspondante est à supprimer
         :return: True si la suppression a pu être réalisée
         """
-        ...
-        return True
+        try:
+            with Dao.connection.cursor() as cursor:
+                sql = "DELETE FROM address WHERE id_address=%s"
+                cursor.execute(sql, (address.id,))
+                Dao.connection.commit()
+                return cursor.rowcount > 0
+
+        except Exception as e:
+            print(f"Erreur lors de la suppression de l'adresses: {e}")
+            Dao.connection.rollback()
+            return False
