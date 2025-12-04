@@ -110,6 +110,35 @@ class School:
         else:
             return "Échec de la création de l'adresse! "
 
+    def update_address_by_id(self, id_address: int, street: str, city: str, postal_code: int ) -> bool:
+        """
+        Met à jour une adresse en BD via son id
+        :param id_address: id de l'adresse à mettre à jour
+        :param street: nouvelle rue
+        :param city: nouvelle ville
+        :param postal_code: nouveau code postal
+        :return: True si la mise à jour a réussi sinon False
+        """
+        address_dao: AddressDao = AddressDao()
+        address = address_dao.read(id_address)
+
+        if address is None:
+            print(f"Aucune adresse trouvée avec id={id_address}")
+            return False
+
+        address.street = street
+        address.city = city
+        address.postal_code = postal_code
+
+        success = address_dao.update(address)
+
+        if success:
+            print(f"Adresse mise à jour avec succès (id={id_address})")
+        else:
+            print(f"Échec de la mise à jour de l'adresse (id={id_address})")
+
+        return success
+
 
     def delete_address_by_id(self, id_address: int) -> bool:
         """
