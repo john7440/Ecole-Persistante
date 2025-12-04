@@ -12,8 +12,18 @@ class AddressDao(Dao[Address]):
         :param course: à créer sous forme d'entité Course en BD
         :return: l'id de l'entité insérée en BD (0 si la création a échoué)
         """
-        ...
-        return 0
+        try:
+            with Dao.connection.cursor() as cursor:
+                sql = "INSERT INTO address (street,city, postal_code) VALUES (%s, %s, %s)"
+                cursor.execute(sql, (address.street, address.city, address.postal_code))
+                Dao.connection.commit()
+                new_id = cursor.lastrowid
+                address.id = new_id
+                return new_id
+        except Exception as e:
+            print(f"Erreur lors de la création de l'adresse: {e}")
+            Dao.connection.rollback()
+            return 0
 
     def read(self, id_address: int) -> Optional[Address]:
         """Renvoit le cours correspondant à l'entité dont l'id est id_course
@@ -50,7 +60,6 @@ class AddressDao(Dao[Address]):
             print(f"Erreur lors de la lecture des adresses: {e}")
 
         return addresses
-
 
     def update(self, address: Address) -> bool:
         """Met à jour en BD l'entité Course correspondant à course, pour y correspondre
