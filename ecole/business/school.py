@@ -89,6 +89,7 @@ class School:
             )
         return result
 
+    #gestion des adresses
     def get_all_addresses(self) -> str:
         address_dao: AddressDao = AddressDao()
         adresses = address_dao.read_all()
@@ -98,6 +99,16 @@ class School:
                 f"{a.street}, {a.postal_code}: {a.city}\n"
             )
         return result
+
+    def create_new_adress(self, street: str, city: str, postal_code: int) -> str:
+        address_dao: AddressDao = AddressDao()
+        new_address = Address(street=street, city=city, postal_code=postal_code)
+
+        new_id = address_dao.create(new_address)
+        if new_id > 0:
+            return f"Adresse créée avec succès (id={new_id}): {street}, {postal_code} {city})"
+        else:
+            return "Échec de la création de l'adresse! "
 
     def get_all_teachers(self) -> str:
         teacher_dao: TeacherDao = TeacherDao()
