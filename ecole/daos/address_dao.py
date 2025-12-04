@@ -9,8 +9,8 @@ from typing import Optional, List
 class AddressDao(Dao[Address]):
     def create(self, address: Address) -> int:
         """Crée en BD l'entité Address correspondant à l'adresse donnée
-        :param address: à créer sous forme d'entité Address en BD
-        :return: l'id de l'entité insérée en BD (0 si la création a échoué)
+        :param address: Address en BD
+        :return: l'id insérée en BD (0 si la création a échoué)
         """
         try:
             with Dao.connection.cursor() as cursor:
@@ -26,7 +26,7 @@ class AddressDao(Dao[Address]):
             return 0
 
     def read(self, id_address: int) -> Optional[Address]:
-        """Renvoit le cours correspondant à l'entité dont l'id est id_course
+        """Renvoie le cours correspondant à l'entité dont l'id est id_course
            (ou None s'il n'a pu être trouvé)"""
         address: Optional[Address]
 
@@ -66,11 +66,7 @@ class AddressDao(Dao[Address]):
     def update(self, address: Address) -> bool:
         """Met à jour en BD l'entité Address correspondant à l'adresse donnée
         :param address: Adresse déjà mise à jour en mémoire
-        :return: True si la mise à jour a pu être réalisée, False sinon
-        """
-        """Met à jour en BD l'entité Address correspondant à l'adresse donnée
-        :param address: adresse déjà mise à jour en mémoire
-        :return: True si la mise à jour a pu être réalisée, False sinon
+        :return: True si la mise à jour a pu être réalisée sinon False
         """
         try:
             with Dao.connection.cursor() as cursor:
@@ -78,6 +74,7 @@ class AddressDao(Dao[Address]):
                 cursor.execute(sql, (address.street, address.city, address.postal_code, address.id))
                 Dao.connection.commit()
                 return cursor.rowcount > 0
+
         except Exception as e:
             print(f"Erreur lors de la mise à jour de l'adresse: {e}")
             Dao.connection.rollback()
@@ -85,8 +82,8 @@ class AddressDao(Dao[Address]):
 
     def delete(self, address: Address) -> bool:
         """Supprime en BD l'entité Address correspondant à l'adresse donnée
-        :param address: adresse dont l'entité correspondante est à supprimer
-        :return: True si la suppression a pu être réalisée
+        :param address: Adresse à supprimer
+        :return: True si la suppression a pu être réalisée sinon False
         """
         try:
             with Dao.connection.cursor() as cursor:
