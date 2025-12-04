@@ -119,6 +119,17 @@ class School:
             )
         return result
 
+    def print_all_database(self):
+        school = School()
+        print('---------------Courses---------------\n')
+        print(school.get_all_courses())
+        print('---------------Adresses---------------\n')
+        print(school.get_all_addresses())
+        print('---------------Teachers---------------\n')
+        print(school.get_all_teachers())
+        print('---------------Students---------------\n')
+        print(school.get_all_students())
+
 
     def init_static(self) -> None:
         """Initialisation d'un jeu de test pour l'école."""
