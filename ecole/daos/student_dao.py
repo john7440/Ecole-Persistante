@@ -7,8 +7,32 @@ from ecole.models.student import Student
 @dataclass
 class StudentDao(Dao[Student]):
     def create(self, student: Student) -> int:
-        ...
-        return 0
+        """
+        Crée en BD un nouvel élève.
+        - Insère d'abord la personne dans la table person
+        - Puis insère le professeur dans la table student
+        :param student: entité Student à insérer
+        :return: l'id de l'élève inséré (0 si échec)
+        """
+        try:
+            with Dao.connection.cursor() as cursor:
+
+                sql_person = "INSERT INTO person (first_name, last_name, age) VALUES (%s, %s, %s)"
+                cursor.execute(sql_person, (student.first_name, student.last_name, student.age))
+                person_id = cursor.lastrowid
+
+                sql_student = "INSERT INTO student (id_person) VALUES (%s)"
+                cursor.execute(sql_student, (person_id,))
+                Dao.connection.commit()
+
+                new_id = cursor.lastrowid
+                student.student_nbr = new_id
+                return new_id
+
+        except Exception as e:
+            print(f"Erreur lors de la création de l'élève: {e}")
+            Dao.connection.rollback()
+            return 0
 
     def read(self, student_nbr: int) -> Optional[Student]:
         student: Optional[Student]
