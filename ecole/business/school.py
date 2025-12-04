@@ -91,6 +91,29 @@ class School:
         return success
 
     @staticmethod
+    def delete_course_by_id(id_course: int) -> bool:
+        """
+        Supprime un cours en BD via son identifiant
+        :param id_course: id du cours à supprimer
+        :return: True si la suppression a réussi, False sinon
+        """
+        course_dao: CourseDao = CourseDao()
+        course = course_dao.read(id_course)
+
+        if course is None:
+            print(f"Aucun cours trouvée avec id={id_course}")
+            return False
+
+        success = course_dao.delete(course)
+
+        if success:
+            print(f"Cours supprimée avec succès (id={id_course})")
+        else:
+            print(f"Échec de la suppression du cours (id={id_course})")
+
+        return success
+
+    @staticmethod
     def get_all_courses() -> str:
         course_dao: CourseDao = CourseDao()
         courses = course_dao.read_all()
@@ -130,6 +153,31 @@ class School:
 
         return success
 
+    @staticmethod
+    def delete_teacher_by_id(id_teacher: int) -> bool:
+        """
+        Supprime un teacher en BD via son identifiant
+        :param id_teacher: id du teacher à supprimer
+        :return: True si la suppression a réussi, False sinon
+        """
+        teacher_dao: TeacherDao = TeacherDao()
+        teacher = teacher_dao.read(id_teacher)
+
+        if teacher is None:
+            print(f"Aucun professeur trouvée avec id={id_teacher}")
+            return False
+
+        success = teacher_dao.delete(teacher)
+
+        if success:
+            print(f"Elève supprimée avec succès (id={id_teacher})")
+        else:
+            print(f"Échec de la suppression de l'élève (id={id_teacher})")
+
+        return success
+
+
+
     #=================Gestion des Students=================
     @staticmethod
     def get_student_by_id(id_student: int):
@@ -155,6 +203,29 @@ class School:
             print(f"Elève mise à jour avec succès (id={id_student})")
         else:
             print(f"Échec de la mise à jour de l'élève (id={id_student})")
+
+        return success
+
+    @staticmethod
+    def delete_student_by_id(id_student: int) -> bool:
+        """
+        Supprime un élève en BD via son identifiant
+        :param id_student: identifiant de l'élève à supprimer
+        :return: True si la suppression a réussi, False sinon
+        """
+        student_dao: StudentDao = StudentDao()
+        student = student_dao.read(id_student)
+
+        if student is None:
+            print(f"Aucun élève trouvée avec id={id_student}")
+            return False
+
+        success = student_dao.delete(student)
+
+        if success:
+            print(f"Elève supprimée avec succès (id={id_student})")
+        else:
+            print(f"Échec de la suppression de l'élève (id={id_student})")
 
         return success
 
