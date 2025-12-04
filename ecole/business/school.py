@@ -59,15 +59,26 @@ class School:
         return course_dao.read(id_course)
 
     @staticmethod
-    def create_course(name: str,start_date: date, end_date: date) -> int:
-        """
-            Crée un cours en BD via CourseDao
-            :param name: nom du cours
-            :param start_date: date de début (ex. '2025-01-01')
-            :param end_date: date de fin (ex. '2025-06-30')
-            :return: l'id du cours inséré en BD (0 si échec)"""
-        ...
-        return 0
+    def create_course(name: str,start_date: date, end_date: date, id_teacher: int) -> str:
+
+        course_dao: CourseDao = CourseDao()
+        new_course = Course(
+            name=name,
+            start_date=start_date,
+            end_date=end_date,
+            id_teacher=id_teacher
+        )
+
+        new_id = course_dao.create(new_course)
+
+        if new_id > 0:
+            return (
+                f"Cours créé avec succès (id={new_id}): "
+                f"{name}, du {start_date} au {end_date}, enseignant id={id_teacher}"
+            )
+        else:
+            return "Échec de la création du cours."
+
 
     @staticmethod
     def update_course_by_id(id_course: int, name: str, start_date : date, end_date: date) -> bool:
