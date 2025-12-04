@@ -75,10 +75,6 @@ class School:
         student_dao: StudentDao = StudentDao()
         return student_dao.read(id_student)
 
-    def get_address_by_id(self, id_address: int):
-        address_dao: AddressDao = AddressDao()
-        return address_dao.read(id_address)
-
     def get_all_courses(self) -> str:
         course_dao: CourseDao = CourseDao()
         courses = course_dao.read_all()
@@ -90,6 +86,10 @@ class School:
         return result
 
     #gestion des adresses
+    def get_address_by_id(self, id_address: int):
+        address_dao: AddressDao = AddressDao()
+        return address_dao.read(id_address)
+
     def get_all_addresses(self) -> str:
         address_dao: AddressDao = AddressDao()
         adresses = address_dao.read_all()
@@ -109,6 +109,29 @@ class School:
             return f"Adresse créée avec succès (id={new_id}): {street}, {postal_code} {city})"
         else:
             return "Échec de la création de l'adresse! "
+
+
+    def delete_address_by_id(self, id_address: int) -> bool:
+        """
+        Supprime une adresse en BD via son identifiant
+        :param id_address: identifiant de l'adresse à supprimer
+        :return: True si la suppression a réussi, False sinon
+        """
+        address_dao: AddressDao = AddressDao()
+        address = address_dao.read(id_address)
+
+        if address is None:
+            print(f"Aucune adresse trouvée avec id={id_address}")
+            return False
+
+        success = address_dao.delete(address)
+
+        if success:
+            print(f"Adresse supprimée avec succès (id={id_address})")
+        else:
+            print(f"Échec de la suppression de l'adresse (id={id_address})")
+
+        return success
 
     def get_all_teachers(self) -> str:
         teacher_dao: TeacherDao = TeacherDao()
