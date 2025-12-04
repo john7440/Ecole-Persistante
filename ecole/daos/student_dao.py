@@ -8,6 +8,9 @@ from ecole.models.student import Student
 class StudentDao(Dao[Student]):
     def create(self, student: Student) -> int:
         """
+        !!!!!!!!NOTE!!!!!!! le student_nbr n'est pas auto-incrémenté
+        donc possibilité de ne créer qu'un student sans passer l'id
+        directement
         Crée en BD un nouvel élève.
         - Insère d'abord la personne dans la table person
         - Puis insère le professeur dans la table student
