@@ -29,7 +29,11 @@ def main() -> None:
     #school.create_course(name="Programmation Python",start_date=datetime.date(2025,1,10),\
     #                    end_date=datetime.date(2025,1,19),id_teacher=3)
 
+    #print(school.get_all_courses_with_teacher())
+
     school.print_all_database()
+
+
 
 
 if __name__ == '__main__':

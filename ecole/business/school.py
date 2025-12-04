@@ -136,6 +136,24 @@ class School:
             )
         return result
 
+    @staticmethod
+    def get_all_courses_with_teacher() -> str:
+        """
+        Retourne une chaîne formatée listant tous les cours avec leur enseignant associé
+
+        :return: Les cours et leurs enseignants
+        """
+        courses = CourseDao.read_all_with_teacher()
+        result = ""
+
+        for c in courses:
+            teacher_info = getattr(c, "teacher_name", f"id={c.id_teacher}")
+            result += (
+                f"Cours: {c.name} | Début: {c.start_date} | Fin: {c.end_date} | Enseignant: {teacher_info}\n"
+            )
+
+        return result
+
     #================Gestion des teachers====================
     @staticmethod
     def create_new_teacher(first_name: str, last_name: str, age: int, hiring_date: date) -> str:
