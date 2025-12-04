@@ -7,8 +7,32 @@ from ecole.models.teacher import Teacher
 @dataclass
 class TeacherDao(Dao[Teacher]):
     def create(self, teacher: Teacher) -> int:
-        ...
-        return 0
+        """
+        Crée en BD un nouveau professeur.
+        - Insère d'abord la personne dans la table `person`
+        - Puis insère le professeur dans la table `teacher`
+        :param teacher: entité Teacher à insérer
+        :return: l'id du professeur inséré (0 si échec)
+        """
+        try:
+            with Dao.connection.cursor() as cursor:
+
+                sql_person = "INSERT INTO person (first_name, last_name, age) VALUES (%s, %s, %s)"
+                cursor.execute(sql_person, (teacher.first_name, teacher.last_name, teacher.age))
+                person_id = cursor.lastrowid
+
+                sql_teacher = "INSERT INTO teacher (hiring_date, id_person) VALUES (%s, %s)"
+                cursor.execute(sql_teacher, (teacher.hiring_date, person_id))
+                Dao.connection.commit()
+
+                new_id = cursor.lastrowid
+                teacher.id = new_id
+                return new_id
+
+        except Exception as e:
+            print(f"Erreur lors de la création du professeur: {e}")
+            Dao.connection.rollback()
+            return 0
 
     def read(self, id_teacher: int) -> Optional[Teacher]:
         """Retourne un teacher en fonction de son id"""
