@@ -45,20 +45,36 @@ class StudentDao(Dao[Student]):
         return students
 
     def update(self, student: Student) -> bool:
-        """Met à jour en BD l'entité Course correspondant à course, pour y correspondre
-
-        :param course: cours déjà mis à jour en mémoire
+        """Met à jour en BD l'entité Student correspondant à student, pour y correspondre
+        :param student: le student à mettre à jour
         :return: True si la mise à jour a pu être réalisée
         """
-        ...
-        return True
+        try:
+            with Dao.connection.cursor() as cursor:
+                sql= "UPDATE student SET first_name=%s, last_name=%s, age=%s WHERE id_student=%s"
+                cursor.execute(sql, (student.first_name,student.last_name,student.age))
+                Dao.connection.commit()
+                return cursor.rowcount > 0
+
+        except Exception as e:
+            print(f"Erreur lors de la mise à jour su student: {e}")
+            return False
 
     def delete(self, student: Student) -> bool:
-        """Supprime en BD l'entité Course correspondant à course
-
-        :param course: cours dont l'entité Course correspondante est à supprimer
+        """Supprime en BD l'entité Student correspondant à student
+        :param student: Le student à supprimer
         :return: True si la suppression a pu être réalisée
         """
-        ...
-        return True
+        try:
+            with Dao.connection.cursor() as cursor:
+                sql= "DELETE FROM student WHERE id_student=%s"
+                cursor.execute(sql, (student.students_nb))
+                Dao.connection.commit()
+                return cursor.rowcount > 0
+
+        except Exception as e:
+            print(f"Erreur lors de la suppression de l'adresse: {e}")
+            Dao.connection.rollback()
+            return False
+
 
