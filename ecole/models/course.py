@@ -18,7 +18,6 @@ if TYPE_CHECKING:
     from .student import Student
     from .teacher import Teacher
 
-
 @dataclass
 class Course:
     """Cours enseigné à l'école :
@@ -33,14 +32,14 @@ class Course:
     name: str
     start_date: date
     end_date: date
-    teacher: Optional[Teacher] = field(default=None, init=False)
+    id_teacher: Optional[int] = None
     students_taking_it: list[Student] = field(default_factory=list, init=False)
 
     def set_teacher(self, teacher: Teacher) -> None:
         """Indique quel est l'enseignant de ce cours."""
-        if teacher != self.teacher:
+        if teacher != self.teacher:  # type: ignore
             # il y a quelque chose à faire
-            if self.teacher is not None:
+            if self.teacher is not None:  # type: ignore
                 # un autre enseignant enseignait précédemment ce cours, qui ne doit
                 # donc plus faire partie de la liste des cours qu'il enseigne
                 teacher.courses_teached.remove(self)
