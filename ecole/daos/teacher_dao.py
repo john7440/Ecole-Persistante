@@ -11,6 +11,7 @@ class TeacherDao(Dao[Teacher]):
         return 0
 
     def read(self, id_teacher: int) -> Optional[Teacher]:
+        """Retourne un teacher en fonction de son id"""
         teacher: Optional[Teacher]
 
         with Dao.connection.cursor() as cursor:
@@ -26,6 +27,7 @@ class TeacherDao(Dao[Teacher]):
         return teacher
 
     def read_all(self) -> List[Teacher]:
+        """Renvoi tous les teachers"""
         teachers: List[Teacher] = []
         try:
             with Dao.connection.cursor() as cursor:
@@ -45,20 +47,35 @@ class TeacherDao(Dao[Teacher]):
         return teachers
 
     def update(self, teacher: Teacher) -> bool:
-        """Met à jour en BD l'entité Course correspondant à course, pour y correspondre
-
-        :param course: cours déjà mis à jour en mémoire
-        :return: True si la mise à jour a pu être réalisée
+        """Met à jour en BD l'entité Teacher correspondant à teacher, pour y correspondre
+        :param teacher: Le teacher a update
+        :return: True si la mise à jour a pu être réalisée sinon False
         """
-        ...
-        return True
+        try:
+            with Dao.connection.cursor() as cursor:
+                sql = "UPDATE teacher SET first_name=%s, last_name=%s, age=%S, hiring_date=%s WHERE id_teacher=%s"
+                cursor.execute(sql,(teacher.first_name, teacher.last_name, teacher.age, teacher.hiring_date, teacher.id))
+                Dao.connection.commit()
+                return cursor.rowcount > 0
+
+        except Exception as e:
+            print(f"Le professeur n'as pas pu être mis a jour : {e}")
+            return False
 
     def delete(self, teacher: Teacher) -> bool:
-        """Supprime en BD l'entité Course correspondant à course
-
-        :param course: cours dont l'entité Course correspondante est à supprimer
-        :return: True si la suppression a pu être réalisée
+        """Supprime en BD l'entité Teacher correspondant à teacher
+        :param teacher: Teacher à supprimer
+        :return: True si la suppression a pu être réalisée sinon False
         """
-        ...
-        return True
+        try:
+            with Dao.connection.cursor() as cursor:
+                sql = "DELETE FROM teacher WHERE id_teacher=%s"
+                cursor.execute(sql, (teacher.id,))
+                Dao.connection.commit()
+                return cursor.rowcount > 0
+
+        except Exception as e:
+            print(f"Erreur lors de la suppression du professeur: {e}")
+            Dao.connection.rollback()
+            return False
 
