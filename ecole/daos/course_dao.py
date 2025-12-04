@@ -58,7 +58,8 @@ class CourseDao(Dao[Course]):
 
         return course
 
-    def read_all(self) -> List[Course]:
+    @staticmethod
+    def read_all() -> List[Course]:
         courses: List[Course] = []
         try:
             with Dao.connection.cursor() as cursor:
@@ -77,7 +78,8 @@ class CourseDao(Dao[Course]):
 
         return courses
 
-    def read_all_with_teacher(self) -> List[Course]:
+    @staticmethod
+    def read_all_with_teacher() -> List[Course]:
         """
         Renvoie la liste de tous les cours avec leur enseignant associé.
 
