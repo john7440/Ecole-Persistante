@@ -17,6 +17,7 @@ from ecole.models.teacher import Teacher
 from ecole.models.student import Student
 
 
+# noinspection SpellCheckingInspection
 @dataclass
 class School:
     """Couche métier de l'application de gestion d'une école,
@@ -126,6 +127,31 @@ class School:
 
     #================Gestion des teachers====================
     @staticmethod
+    def create_new_teacher(first_name: str, last_name: str, age: int, hiring_date: date) -> str:
+        """
+        Crée un nouvel enseignant en BD via le DAO
+        :param first_name: prénom du professeur
+        :param last_name: nom du professeur
+        :param age: âge du professeur
+        :param hiring_date: date d'embauche (format 'YYYY-MM-DD')
+        :return: message indiquant le succès ou l'échec
+        """
+        teacher_dao: TeacherDao = TeacherDao()
+        new_teacher = Teacher(
+            first_name=first_name,
+            last_name=last_name,
+            age=age,
+            hiring_date=hiring_date
+        )
+
+        new_id = teacher_dao.create(new_teacher)
+
+        if new_id > 0:
+            return f"Professeur créé avec succès (id={new_id}): {first_name} {last_name}, {age} ans, embauché le {hiring_date}"
+        else:
+            return "Échec de la création du professeur!"
+
+    @staticmethod
     def get_teacher_by_id(id_teacher: int):
         teacher_dao: TeacherDao = TeacherDao()
         return teacher_dao.read(id_teacher)
@@ -179,6 +205,22 @@ class School:
 
 
     #=================Gestion des Students=================
+    @staticmethod
+    def create_new_student(first_name: str, last_name: str, age: int) -> str:
+        student_dao: StudentDao = StudentDao()
+        new_student = Student(
+            first_name=first_name,
+            last_name=last_name,
+            age=age
+        )
+
+        new_id = student_dao.create(new_student)
+
+        if new_id > 0:
+            return f"Elève créé avec succès (id={new_id}): {first_name} {last_name}, {age} ans!"
+        else:
+            return "Échec de la création de l'élève!"
+
     @staticmethod
     def get_student_by_id(id_student: int):
         student_dao: StudentDao = StudentDao()
